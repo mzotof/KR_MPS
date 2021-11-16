@@ -53,29 +53,63 @@ void send_Uart(int c)//   Отправка байта
     PORTD &= ~(1<<PD2);
 }
 
-volatile int receivedData = -1;
+volatile int pressed = 0/*, emptyQueue = 1*/;
+
+int digits[] = { 0b00111111,
+                 0b00000110,
+                 0b01011011,
+                 0b01001111,
+                 0b01100110,
+                 0b01101101,
+                 0b01111101,
+                 0b00000111,
+                 0b01111111,
+                 0b01101111  };
 
 ISR(USART_RXC_vect)
 {
-    receivedData = UDR;
+    int i, j, data = UDR;
+    if (!(data&0b10000000))
+    {
+        /*if (data != 0b01111111)
+            emptyQueue = 0;
+        else
+            emptyQueue = 1;*/
+        if (data == 0b01111111 && pressed > 0)
+        {
+            send_Uart(0);
+            pressed--;
+        }
+        else if (pressed > 0)
+        {
+            send_Uart(1);
+            pressed--;
+            for (j = 0; j < 3; j++)
+            {
+                for (i = 0; i < 50; i++)
+                {
+                    PORTB = 0b00000110;
+                    PORTA = digits[data / 10];
+                    _delay_ms(10);
+                    PORTB = 0b00000101;
+                    PORTA = digits[data % 10];
+                    _delay_ms(10);
+                } 
+            PORTB = 0b00000111;
+            _delay_ms(500);
+            }
+        }
+        else 
+        {
+            send_Uart(0);
+        }
+    }
 }
 
 
 int main()
 {
     sei();
-    int i, j, data;
-    int counter = 0, pressed = 0;    
-    int digits[] = { 0b00111111,
-                     0b00000110,
-                     0b01011011,
-                     0b01001111,
-                     0b01100110,
-                     0b01101101,
-                     0b01111101,
-                     0b00000111,
-                     0b01111111,
-                     0b01101111  };
 
     DDRA  = 0b01111111;
     DDRB  = 0b00000011;
@@ -87,66 +121,19 @@ int main()
 
     while(1)
     {
-        /*if (!(PINB&0b00000100))
+        if (!(PINB&0b00000100))
         {
-            while(!(PINB&0b00000100));
+            while (!(PINB&0b00000100));
             pressed++;
         }
-        if (!(receivedData&0b01111111) && receivedData!=-1)
+        /*if (emptyQueue == 1)
         {
-            counter = receivedData;
-            if (counter == 0 && pressed > 0)
-            {
-                send_Uart(0);
-                pressed--;
-                for (j = 0; j < 3; j++)  //error
-                {
-                    for (i = 0; i < 50; i++)
-                    {
-                        PORTB = 0b00000110;
-                        PORTA = 0b01111001;
-                        _delay_ms(10);
-                        PORTB = 0b00000101;
-                        PORTA = 0b00110011;
-                        _delay_ms(10);
-                    } 
-                    PORTB = 0b00000111;
-                    _delay_ms(500);
-                }
-            }
-            else if (pressed > 0)
-            {
-                send_Uart(1);
-                receivedData = -1;
-                while (receivedData==-1);
-                pressed--;
-                data = receivedData;
-                for (j = 0; j < 3; j++)
-                {
-                    for (i = 0; i < 50; i++)
-                    {
-                        PORTB = 0b00000110;
-                        PORTA = digits[data / 10];
-                        _delay_ms(10);
-                        PORTB = 0b00000101;
-                        PORTA = digits[data % 10];
-                        _delay_ms(10);
-                    } 
-                PORTB = 0b00000111;
-                _delay_ms(500);
-                }
-            }
-            else 
-            {
-                send_Uart(0);
-            }
-        }
-        PORTB = 0b00000110;
-        PORTA = digits[counter / 10];
-        _delay_ms(10);
-        PORTB = 0b00000101;
-        PORTA = digits[counter % 10];
-        _delay_ms(10);
-        PORTB = 0b00000111;*/
+            PORTB = 0b00000110;
+            PORTA = digits[0];
+            _delay_ms(10);
+            PORTB = 0b00000101;
+            PORTA = digits[0];
+            _delay_ms(10);
+        }*/
     }
 }

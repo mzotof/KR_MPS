@@ -53,7 +53,7 @@ void send_Uart(int c)//   Отправка байта
     PORTD &= ~(1<<PD2);
 }
 
-volatile int counter = -1, send = -1/*, queue[100], qlen = 0*/;
+volatile int counter = 0, send = 0/*, queue[100], qlen = 0*/;
 
 ISR(USART_RXC_vect)
 {
@@ -101,7 +101,7 @@ int main()
         {
             counter++;
             if (counter == 100)
-                counter = 0;
+                counter = 1;
             for (j = 0; j < 3; j++)
             {
                 for (i = 0; i < 50; i++)

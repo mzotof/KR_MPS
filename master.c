@@ -74,20 +74,22 @@ int main()
 
     while(1)
     {
-        send_Uart(0b10000000);
-        //PORTD &= ~(1<<PD2);
+        /*send_Uart(0b10000000);
         data = recieve_Uart();
         PORTD |= (1<<PD2);
         if (data != 0b11111111)
-            insert(data&0b01111111);
-        /*send_Uart(qlen);
-        PORTD &= ~(1<<PD2);
+            insert(data&0b01111111);*/
+        if (queue[0] != -1)
+            send_Uart(queue[0]);
+        else
+            send_Uart(0b01111111);
         data = recieve_Uart();
         PORTD |= (1<<PD2);
-        if (data == 1)
+        /*if (data == 0)
+            _delay_ms(10000);
+        else*/ if (data == 1)
         {
             int a = delete();
-            send_Uart(a);
             qlen--;
             for (j = 0; j < 3; j++)
             {
@@ -105,8 +107,8 @@ int main()
                 PORTC = 0b00001111;
                 _delay_ms(500);
             }
-        }*/
-        if (queue[0] != -1)
+        }
+        /*if (queue[0] != -1)
         {
             if (queue[1] != -1)
             {
@@ -132,6 +134,6 @@ int main()
                 PORTA = digits[queue[0] % 10];
             }
             _delay_ms(10);
-        }
+        }*/
     }
 }
