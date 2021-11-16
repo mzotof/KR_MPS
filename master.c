@@ -50,7 +50,7 @@ int delete(void)
 }
 
 int main()
-{-
+{
     int i, j, data;
     for (i=0;i<100;i++)
         queue[i]=-1;
