@@ -53,7 +53,8 @@ void send_Uart(int c)//   Отправка байта
     PORTD &= ~(1<<PD2);
 }
 
-volatile int pressed = 0/*, emptyQueue = 1*/;
+volatile char pressed;
+volatile char emptyQueue;
 
 int digits[] = { 0b00111111,
                  0b00000110,
@@ -69,6 +70,7 @@ int digits[] = { 0b00111111,
 ISR(USART_RXC_vect)
 {
     int i, j, data = UDR;
+    _delay_ms(1);
     if (!(data&0b10000000))
     {
         /*if (data != 0b01111111)
@@ -109,6 +111,9 @@ ISR(USART_RXC_vect)
 
 int main()
 {
+    pressed = 0;
+    emptyQueue = 1;
+
     sei();
 
     DDRA  = 0b01111111;

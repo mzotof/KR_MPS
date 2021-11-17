@@ -84,7 +84,6 @@ int main()
         else
             send_Uart(0b01111111);
         data = recieve_Uart();
-        PORTD |= (1<<PD2);
         /*if (data == 0)
             _delay_ms(10000);
         else*/ if (data == 1)
@@ -135,5 +134,6 @@ int main()
             }
             _delay_ms(10);
         }*/
+        _delay_ms(100);
     }
 }
