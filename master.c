@@ -68,7 +68,7 @@ void goToMK3(void) // общение с МК3
 {
     unsigned char i, j, data;
 
-    if (queue[0] != 0) // если очередь не пуста
+    if (qlen > 0) // если очередь не пуста
         sendUart(queue[0]); // отправка номера следующего в очереди человека
     else
         sendUart(0b01111111); // отправка сигнала, что очередь пуста
@@ -99,9 +99,9 @@ void goToMK3(void) // общение с МК3
 
 void outputQueue(void) // вывод очереди
 {
-    if (queue[0] != 0)
+    if (qlen > 0)
     {
-        if (queue[1] != 0)
+        if (qlen > 1)
         {
             PORTC = 0b00001010;
             PORTA = digits[queue[0] / 10];
@@ -113,7 +113,7 @@ void outputQueue(void) // вывод очереди
             PORTA = digits[queue[0] / 10];
         }
         _delay_ms(10);
-        if (queue[1] != 0)
+        if (qlen > 1)
         {
             PORTC = 0b00000101;
             PORTA = digits[queue[0] % 10];

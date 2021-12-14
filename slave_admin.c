@@ -79,7 +79,7 @@ void checkButton(unsigned char button_pin) // проверка нажатия н
     }
 }
 
-void outputNotEmptyQueue(void) // вывод сигнала о том, что очередь пуста
+void outputNotEmptyQueue(void) // вывод сигнала о том, что очередь не пуста
 {
     PORTB = 0b00000110;
     PORTA = 0b01000110;
@@ -104,7 +104,7 @@ int main()
     while(1)
     {
         checkButton(1<<PD2);
-        if (emptyQueue == 1)
+        if (emptyQueue == 0)
             outputNotEmptyQueue();
     }
 }
